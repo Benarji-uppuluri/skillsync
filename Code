@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>SkillSync AI Demo</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 0; background: #fafbfc; }
+    .container { width: 95%; max-width: 420px; margin: 48px auto; background: #fff; border-radius: 12px; box-shadow: 0 2px 10px #e6e6f6; padding: 24px; }
+    h1, h2 { color: #3450a1; }
+    button { background: #3450a1; color: #fff; border: none; padding: 10px 20px; border-radius: 5px; margin: 15px 0; cursor: pointer; font-size: 16px; }
+    button:hover { background: #222e64; }
+    .hidden { display: none; }
+    .card { background: #f2f7fa; padding: 16px; border-radius: 8px; margin-bottom: 18px; }
+    .chat-box { min-height: 100px; max-height: 200px; overflow-y: auto; border: 1px solid #ddd; background: #f7fbff; margin-bottom: 12px; padding: 10px; border-radius: 8px; }
+    #chatInput { width: 80%; padding: 7px; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>SkillSync AI Demo</h1>
+
+    <!-- Onboarding Quiz -->
+    <div id="quizSection">
+      <h2>Onboarding Quiz</h2>
+      <div id="quizQ">What skill do you want to improve?</div>
+      <input id="skillInput" type="text" placeholder="e.g. Python, AI, Communication">
+      <div id="quizQ2" class="hidden">
+        <br>What is your current level?<br>
+        <select id="levelInput">
+          <option>Beginner</option>
+          <option>Intermediate</option>
+          <option>Advanced</option>
+        </select>
+      </div>
+      <div id="quizQ3" class="hidden">
+        <br>Preferred learning style?<br>
+        <select id="styleInput">
+          <option>Hands-on Projects</option>
+          <option>Short Tutorials</option>
+          <option>Group Collaboration</option>
+        </select>
+      </div>
+      <button id="quizBtn" onclick="nextQuiz()">Next</button>
+    </div>
+
+    <!-- Personalized Curriculum -->
+    <div id="curriculumSection" class="hidden">
+      <h2>Personalized Curriculum</h2>
+      <div class="card" id="currCard">
+      </div>
+      <button onclick="showChat()">Go to Peer Chat →</button>
+    </div>
+
+    <!-- Peer Chat -->
+    <div id="chatSection" class="hidden">
+      <h2>Peer Collaboration Chat</h2>
+      <div class="chat-box" id="chatBox">
+        <strong>AI:</strong> Welcome! Connect and share learning progress here.<br>
+      </div>
+      <input id="chatInput" placeholder="Type a message...">
+      <button onclick="sendMsg()">Send</button>
+      <br><br>
+      <button onclick="restart()">Restart Demo</button>
+    </div>
+  </div>
+  
+  <script>
+    // Quiz Vars
+    let quizStep = 0;
+    let skill = '', level = '', style = '';
+    function nextQuiz() {
+      if (quizStep === 0) {
+        skill = document.getElementById("skillInput").value;
+        if (!skill) { alert("Please enter a skill."); return; }
+        document.getElementById("quizQ2").classList.remove("hidden");
+        document.getElementById("quizBtn").innerText = "Next";
+        quizStep = 1;
+      } else if (quizStep === 1) {
+        level = document.getElementById("levelInput").value;
+        document.getElementById("quizQ3").classList.remove("hidden");
+        quizStep = 2;
+      } else if (quizStep === 2) {
+        style = document.getElementById("styleInput").value;
+        document.getElementById("quizSection").classList.add('hidden');
+        document.getElementById("curriculumSection").classList.remove('hidden');
+        document.getElementById("currCard").innerHTML =
+          `<strong>Skill:</strong> ${skill}<br>
+          <strong>Level:</strong> ${level}<br>
+          <strong>Preferred Style:</strong> ${style}<br><br>
+          <strong>Your Personalized Plan</strong><ul>
+            <li>${style === 'Hands-on Projects' ? 'Start with a mini project in ' + skill + '.' : 'Begin with an interactive tutorial on ' + skill + '.'}</li>
+            <li>Access AI-generated quizzes every week.</li>
+            <li>Join a peer group to track progress and ask questions.</li>
+          </ul>`;
+      }
+    }
+
+    // Chat Logic
+    function showChat() {
+      document.getElementById("curriculumSection").classList.add('hidden');
+      document.getElementById("chatSection").classList.remove('hidden');
+    }
+
+    function sendMsg() {
+      let box = document.getElementById('chatBox');
+      let input = document.getElementById('chatInput');
+      if (!input.value) return;
+      let msg = input.value;
+      box.innerHTML += `<span style='color:#555;'><br><strong>You:</strong> ${msg}</span>`;
+      setTimeout(() => {
+        box.innerHTML += `<br><strong>Peer:</strong> Great tip! Let's learn together.`;
+        box.scrollTop = box.scrollHeight;
+      }, 600);
+      input.value = '';
+      box.scrollTop = box.scrollHeight;
+    }
+    function restart() { location.reload(); }
+  </script>
+</body>
+</html>
